@@ -16,6 +16,7 @@ init_action = input('''Please
                 \n\ttype 'update' to CHANGE something 
                 \n\ttype 'delete' to DELETE contact
                 \n\ttype 'insert' to INSERT data from file 
+                \n\ttype 'page' to use pagination on table
        ---> : ''')
 
 
@@ -138,10 +139,19 @@ def func(action):
             cursor.execute(f"insert into phonebooks(name, email, number, company) values (%s, %s, %s, %s)", row)
         conn.commit()
         print('\nSuccessfully inserted!\n')
-        
+
+    if action == 'page':
+        limit = int(input('type limit: '))
+        offset = int(input('type offset: '))
+        cursor.execute(f"select * from phonebooks order by id limit {limit} offset {offset};")
+        conn.commit()
+        result = cursor.fetchall()
+        for i in result:
+            print(i)
+
     act = input('''What else do you want to do? 
                     If NOTHING, push ENTER button.
-                    If YES, please type 'create', 'read', 'update', 'delete' , 'insert' :  ''')
+                    If YES, please type 'create', 'read', 'update', 'delete' , 'insert' , 'page':  ''')
     if len(act) <= 3:
         print('\nOk, thank you!\n')
         cursor.close()
